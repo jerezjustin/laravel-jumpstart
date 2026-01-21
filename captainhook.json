@@ -1,0 +1,19 @@
+{
+    "pre-commit": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "php vendor/bin/pint --dirty --test"
+            },
+            {
+                "action": "php vendor/bin/peck"
+            },
+            {
+                "action": "php vendor/bin/phpstan analyse --memory-limit=256M"
+            },
+            {
+                "action": "php vendor/bin/rector process --dry-run"
+            }
+        ]
+    }
+}
