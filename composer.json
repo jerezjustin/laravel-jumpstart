@@ -14,15 +14,21 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "*",
+        "captainhook/captainhook": "^5.27",
+        "captainhook/plugin-composer": "^5.3",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.8",
         "laravel/boost": "^1.8",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "peckphp/peck": "^0.2.0",
         "pestphp/pest": "^4.3",
-        "pestphp/pest-plugin-laravel": "^4.0"
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "rector/rector": "^2.3"
     },
     "autoload": {
         "psr-4": {
@@ -49,17 +55,63 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
         ],
+        "fix": [
+            "@lint",
+            "@refactor"
+        ],
+        "lint": [
+            "vendor/bin/pint"
+        ],
+        "refactor": "vendor/bin/rector process",
+        "ide-helper": [
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:models --nowrite",
+            "@php artisan ide-helper:meta"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "@test:typos",
+            "@test:types",
+            "@test:lint",
+            "@test:refactor",
+            "@php artisan test --parallel"
         ],
+        "check": [
+            "@php artisan config:clear --ansi",
+            "@test:typos",
+            "@test:types",
+            "@test:lint",
+            "@test:refactor",
+            "@php artisan test --parallel"
+        ],
+        "test:quick": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test --parallel"
+        ],
+        "test:unit": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test --testsuite=Unit --parallel"
+        ],
+        "test:feature": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test --testsuite=Feature --parallel"
+        ],
+        "test:coverage": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test --coverage --min=80"
+        ],
+        "test:lint": "./vendor/bin/pint --test",
+        "test:typos": "./vendor/bin/peck",
+        "test:types": "./vendor/bin/phpstan analyse --memory-limit=256M",
+        "test:refactor": "./vendor/bin/rector process --dry-run",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan ide-helper:generate --ansi --quiet",
+            "@php artisan ide-helper:meta --ansi --quiet"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
-            "@php artisan boost:update --ansi"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -84,7 +136,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "captainhook/plugin-composer": false
         }
     },
     "minimum-stability": "stable",

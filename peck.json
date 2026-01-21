@@ -1,0 +1,19 @@
+{
+    "preset": "laravel",
+    "ignore": {
+        "words": [
+            "php",
+            "filesystems",
+            "favicon",
+            "js",
+            "captainhook"
+        ],
+        "paths": [
+            "storage\/",
+            "vendor\/",
+            "node_modules\/",
+            "public\/build\/",
+            "public\/mix-manifest.json"
+        ]
+    }
+}
