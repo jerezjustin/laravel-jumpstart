@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
+use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 
 return RectorConfig::configure()
@@ -34,4 +35,5 @@ return RectorConfig::configure()
         ClosureToArrowFunctionRector::class, // Keep closures for route definitions and callbacks.
         SeparateMultiUseImportsRector::class, // Allow grouped imports for Laravel facades.
         RemoveNonExistingVarAnnotationRector::class, // Keep annotations for IDEs and static analysis tools.
+        ReturnBinaryOrToEarlyReturnRector::class, // Prefer || operators for readability in simple conditions.
     ]);
